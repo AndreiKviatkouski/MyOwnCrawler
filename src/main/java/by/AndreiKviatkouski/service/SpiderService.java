@@ -1,4 +1,4 @@
-package by.AndreiKviatkouski.actions;
+package by.AndreiKviatkouski.service;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SpiderLeg {
+public class SpiderService {
     // We'll use a fake USER_AGENT so the web server thinks the robot is a normal web browser.
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.60 YaBrowser/20.12.0.963 Yowser/2.5 Safari/537.36";

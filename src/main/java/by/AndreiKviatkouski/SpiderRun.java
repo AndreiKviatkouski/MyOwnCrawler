@@ -1,7 +1,6 @@
 package by.AndreiKviatkouski;
 
-import by.AndreiKviatkouski.actions.Spider;
-import by.AndreiKviatkouski.service.ElementService;
+import by.AndreiKviatkouski.actions.SpiderAction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,14 +17,14 @@ public class SpiderRun {
 
         List<String> words = new ArrayList<>(Arrays.asList("Tesla", "Musk", "Gigafactory", "Elon Musk"));
 
-        Spider spider = new Spider();
+        SpiderAction spider = new SpiderAction();
 
         spider.openFile("NewData.csv");
-        spider.searchRecursive("http://en.wikipedia.org/wiki/Elon_Musk", words, 8, 3);
+        spider.searchRecursive("http://en.wikipedia.org/wiki/Elon_Musk", words, 8, 10000);
         spider.closeFile();
 
         spider.openFile("DataSort.csv");
-        spider.printSortElement();
+        spider.printSortElementTopTen();
         spider.closeFile();
     }
 }
