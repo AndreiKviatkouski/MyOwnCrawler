@@ -20,7 +20,7 @@ public class SpiderRun {
         SpiderAction spider = new SpiderAction();
 
         spider.openFile("NewData.csv");
-        spider.searchRecursive("http://en.wikipedia.org/wiki/Elon_Musk", words, 8, 10000);
+        spider.searchRecursive("http://en.wikipedia.org/wiki/Elon_Musk", words, 8, 10);
         spider.closeFile();
 
         spider.openFile("DataSort.csv");
