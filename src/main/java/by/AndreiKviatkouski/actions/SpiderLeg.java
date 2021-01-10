@@ -1,4 +1,4 @@
-package by.AndreiKviatkouski;
+package by.AndreiKviatkouski.actions;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;

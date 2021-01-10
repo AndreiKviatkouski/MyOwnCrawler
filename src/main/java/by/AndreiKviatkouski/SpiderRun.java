@@ -1,5 +1,8 @@
 package by.AndreiKviatkouski;
 
+import by.AndreiKviatkouski.actions.Spider;
+import by.AndreiKviatkouski.service.ElementService;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,10 +20,12 @@ public class SpiderRun {
 
         Spider spider = new Spider();
 
-        spider.openFile("NewData.csv", true);
-        spider.searchRecursive("http://en.wikipedia.org/wiki/Elon_Musk", words, 8, 10000);
+        spider.openFile("NewData.csv");
+        spider.searchRecursive("http://en.wikipedia.org/wiki/Elon_Musk", words, 8, 3);
         spider.closeFile();
 
-
+        spider.openFile("DataSort.csv");
+        spider.printSortElement();
+        spider.closeFile();
     }
 }
