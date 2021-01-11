@@ -85,6 +85,7 @@ public class SpiderAction {
                         append(element.getValue3()).append(" ").
                         append(element.getValue4()).append(" ").
                         append(element.getValue5()).append(" ");
+                builder.append("\n");
 
                 builder.append("Numbers are").append(" ");
                 builder.append("\n");
