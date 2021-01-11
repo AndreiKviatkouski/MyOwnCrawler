@@ -1,5 +1,7 @@
 package by.AndreiKviatkouski;
 
+import by.AndreiKviatkouski.actions.SpiderAction;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,26 +14,17 @@ public class SpiderRun {
      * @param args - not used
      */
     public static void main(String[] args) {
-        ArrayList<String> words = new ArrayList<String>(Arrays.asList("Tesla", "Musk", "Gigafactory", "Elon Mask"));
 
-        Spider spider = new Spider();
+        List<String> words = new ArrayList<>(Arrays.asList("Tesla", "Musk", "Gigafactory", "Elon Musk"));
 
-        //for (String word : words) {
-        //    spider.search("http://en.wikipedia.org/wiki/Elon_Musk", words,0);
-        //    spider.writeResults();
-       //}
+        SpiderAction spider = new SpiderAction();
 
-        spider.openFile("filename.csv", true);
-        spider.searchRec("http://en.wikipedia.org/wiki/Elon_Musk", words, 8);
+        spider.openFile("NewData.csv");
+        spider.searchRecursive("http://en.wikipedia.org/wiki/Elon_Musk", words, 8, 10);
         spider.closeFile();
 
-
-        //spider.search(baseUrl, listOfWors);
-
-//        spider.search("http://en.wikipedia.org/wiki/Elon_Musk", "Tesla");
-//        spider.writeResults();
-//        spider.search("http://en.wikipedia.org/wiki/Elon_Musk", "Musk");
-//        spider.writeResults();
-
+        spider.openFile("DataSort.csv");
+        spider.printSortElementTopTen();
+        spider.closeFile();
     }
 }
