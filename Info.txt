@@ -1,7 +1,0 @@
- bild project
-
-  mvn clean assembly:assembly
-
-
-run programme in console
-java -jar ${path to file}\MyOwnCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar -classpath by.AndreiKviatkouski.SpiderRun

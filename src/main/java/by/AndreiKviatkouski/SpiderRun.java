@@ -8,11 +8,6 @@ import java.util.List;
 
 public class SpiderRun {
 
-    /**
-     * This is our test. It creates a spider (which creates spider legs) and crawls the web.
-     *
-     * @param args - not used
-     */
     public static void main(String[] args) {
 
         List<String> words = new ArrayList<>(Arrays.asList("Tesla", "Musk", "Gigafactory", "Elon Musk"));
@@ -21,7 +16,7 @@ public class SpiderRun {
 
         spider.openFile("NewData.csv");
         spider.setStartPage("http://en.wikipedia.org/wiki/Elon_Musk");
-        spider.searchRecursive( words, 8, 10);
+        spider.searchRecursive( words, 8, 100);
         spider.closeFile();
 
         spider.openFile("DataSort.csv");

@@ -39,7 +39,6 @@ public class SpiderAction {
         if (this.pagesVisited.size() < MAX_PAGES_TO_SEARCH && deepStart < MAX_DEEP && !this.pagesVisited.contains(url)) {// start conditions
             leg.crawl(url);
 
-            //List<String> links = leg.getLinks();// create list link
             unvisitedLinks.addAll(leg.getLinks());
 
 
@@ -55,13 +54,11 @@ public class SpiderAction {
             Element newElement = elementService.create(url, words, statistics);
             elements.add(newElement);//add element
 
-            //for (String link : links) {
-            //    searchRecursive(link, words, deepStart + 1, MAX_PAGES_TO_SEARCH);//set deep
-            //}
+
             searchRecursive( words, deepStart + 1, MAX_PAGES_TO_SEARCH);
         }
     }
-    //  3,4, 1,2,3,4   1,2
+
 
     public void openFile(String file) {
         try {
