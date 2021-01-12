@@ -12,23 +12,36 @@ import java.util.*;
 public class SpiderAction {
 
     private final Set<String> pagesVisited = new HashSet<>();
+    LinkedHashSet<String> unvisitedLinks = new LinkedHashSet<>();
+
     private PrintWriter pw;
     private final Map<String, Integer> statistics = new HashMap<>();// statistic count words
     private final List<Element> elements = new ArrayList<>();
     ElementService elementService = new ElementService();
 
 
+    public void setStartPage(String startUrl){
+        this.unvisitedLinks.add(startUrl);
+    }
 
-    public void searchRecursive(String url, List<String> words, int MAX_DEEP, int MAX_PAGES_TO_SEARCH) {
+
+    public void searchRecursive(List<String> words, int MAX_DEEP, int MAX_PAGES_TO_SEARCH) {
 
         SpiderService leg = new SpiderService();
 
         int deepStart = 0;
 
+        this.unvisitedLinks.addAll(leg.getLinks());
+        String url = (String) this.unvisitedLinks.toArray()[0];
+        this.unvisitedLinks.remove(url);
+
+
         if (this.pagesVisited.size() < MAX_PAGES_TO_SEARCH && deepStart < MAX_DEEP && !this.pagesVisited.contains(url)) {// start conditions
             leg.crawl(url);
 
-            List<String> links = leg.getLinks();// create list link
+            //List<String> links = leg.getLinks();// create list link
+            unvisitedLinks.addAll(leg.getLinks());
+
 
             for (String word : words) {
                 int count = leg.countWorlds(word);
@@ -42,11 +55,13 @@ public class SpiderAction {
             Element newElement = elementService.create(url, words, statistics);
             elements.add(newElement);//add element
 
-            for (String link : links) {
-                searchRecursive(link, words, deepStart + 1, MAX_PAGES_TO_SEARCH);//set deep
-            }
+            //for (String link : links) {
+            //    searchRecursive(link, words, deepStart + 1, MAX_PAGES_TO_SEARCH);//set deep
+            //}
+            searchRecursive( words, deepStart + 1, MAX_PAGES_TO_SEARCH);
         }
     }
+    //  3,4, 1,2,3,4   1,2
 
     public void openFile(String file) {
         try {

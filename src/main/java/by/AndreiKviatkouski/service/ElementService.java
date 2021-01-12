@@ -2,14 +2,12 @@ package by.AndreiKviatkouski.service;
 
 import by.AndreiKviatkouski.entyties.Element;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class ElementService {
 
-    private final List<Element> elements = new ArrayList<>();
 
     public Element create(String url, List<String> words, Map<String, Integer> statistics) {
         String param1 = words.get(0);
@@ -31,7 +29,7 @@ public class ElementService {
     }
 
 
-    public void sortDown(List<Element>elements) {
+    public void sortDown(List<Element> elements) {
         Collections.sort(elements, Collections.reverseOrder(Element.compare));
     }
 }

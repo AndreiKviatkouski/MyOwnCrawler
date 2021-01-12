@@ -12,7 +12,7 @@ Using
 Building
 --------
  
- To build this project you will need Maven 2. You can get it at:
+ To build this project you will need Maven 4. You can get it at:
  
      http://maven.apache.org
 
