@@ -1,46 +1,56 @@
 package by.AndreiKviatkouski.service;
 
-import org.junit.jupiter.api.AfterAll;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.File;
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SpiderServiceTest {
 
     SpiderService spiderService;
 
     @BeforeAll
-    void setupPage(){
-        String path =
+    static void setupPage() throws IOException {
 
-        this.spiderService = new SpiderService();
-        //this.spiderService.htmlDocument = Connection.
+        File page = new File("src/test/resources/spider_service_count_worlds.html");
+
+        Document doc = Jsoup.parse(page, "utf-8");
+
+        String str = doc.body().text();
+        System.out.println(str);
+
+        SpiderService spiderService = new SpiderService();
+        spiderService.htmlDocument = doc;
     }
 
-    @AfterAll
-    void removeData(){
-         System.out.println("Hello World form SpiderServiceTest.removeData");
-    }
+//    @AfterAll
+//    void removeData(){
+//         System.out.println("Hello World form SpiderServiceTest.removeData");
+//    }
 
+
+//    @Test
+//    void crawl() {
+//    }
 
     @Test
-    void crawl() {
-    }
+    void countWords() {
+        int elonCount = spiderService.countWords("Elon Musk");
+        int muscCount = spiderService.countWords("Musk");
 
-    @Test
-    void countWorlds() {
-        int elonCount = this.spiderService.countWorlds("Elon_Musk");
-        int muscCount = this.spiderService.countWorlds("Musk");
-
-        int elonCountNoExist = this.spiderService.countWorlds("Elon");
+        int elonCountNoExist = spiderService.countWords("Elon");
 
         assertEquals(1, elonCount);
         assertEquals(1, muscCount);
         assertEquals(0, elonCountNoExist);
     }
 
-    @Test
-    void getLinks() {
-    }
+//    @Test
+//    void getLinks() {
+//    }
 }

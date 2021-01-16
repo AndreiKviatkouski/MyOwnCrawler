@@ -30,7 +30,11 @@ public class SpiderRun {
 
         //java filename.jar output="output.sorted.csv" url="http://en.wikipedia.org/wiki/Elon_Musk" worlds="world1 , world2"
 
-        spider.openFile("C:\\Users"+ File.pathSeparator+"andre\\Desktop\\MyOwnCrawler\\src\\main\\java\\by\\AndreiKviatkouski\\data\\NewData.csv");
+        spider.openFile("C:"+ File.pathSeparator+"Users"+ File.pathSeparator+"andre"+
+                File.pathSeparator+"Desktop"+ File.pathSeparator+"MyOwnCrawler"+
+                File.pathSeparator+"src"+ File.pathSeparator+"main"+ File.pathSeparator+"java"+ File.pathSeparator+ "by"+
+                File.pathSeparator+"AndreiKviatkouski"+ File.pathSeparator+"data"+ File.pathSeparator+"NewData.csv");
+
         spider.setStartPage("http://en.wikipedia.org/wiki/Elon_Musk");
         spider.searchRecursive(words, 8, 1500);
         spider.closeFile();

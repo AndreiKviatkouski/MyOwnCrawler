@@ -62,7 +62,7 @@ public class SpiderAction {
 
 
             for (String word : words) {
-                int count = leg.countWorlds(word);
+                int count = leg.countWords(word);
                 statistics.put(word, count);
             }
 

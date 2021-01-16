@@ -19,7 +19,7 @@ public class SpiderService {
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.60 YaBrowser/20.12.0.963 Yowser/2.5 Safari/537.36";
     private final List<String> links = new LinkedList<>();
-    [protected Document htmlDocument;
+    protected Document htmlDocument;
     static Elements linksOnPage;
 
 
@@ -45,10 +45,7 @@ public class SpiderService {
             }
             linksOnPage = htmlDocument.select("a[href]");
             writeString("Found (" + linksOnPage.size() + ") links");
-            if (linksOnPage.size()==0){////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                System.out.println("Check bug!");
-                return false;
-            }
+
             for (Element link : linksOnPage) {
                 this.links.add(link.absUrl("href"));
             }
@@ -69,7 +66,7 @@ public class SpiderService {
      */
 
 
-    public int countWorlds(String word) {
+    public int countWords(String word) {
         int count = 0;
         //   Defensive coding. This method should only be used after a successful crawl.
         if (this.htmlDocument == null) {
@@ -84,9 +81,13 @@ public class SpiderService {
         while (matcher.find()) {
             count++;
         }
+        if (matcher.find()) {
+            System.out.println(word + "   count: " + count);
+            return count;
+        } else {
+            return 0;
+        }
 
-        System.out.println(word + "   count: " + count);
-        return count;
     }
 
 
