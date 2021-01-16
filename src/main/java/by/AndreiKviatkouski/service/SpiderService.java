@@ -1,5 +1,6 @@
 package by.AndreiKviatkouski.service;
 
+import by.AndreiKviatkouski.validator.WordValidator;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,7 +11,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static by.AndreiKviatkouski.util.Writer.writeString;
 
 public class SpiderService {
     // We'll use a fake USER_AGENT so the web server thinks the robot is a normal web browser.
@@ -21,8 +23,6 @@ public class SpiderService {
     static Elements linksOnPage;
 
 
-//    }
-
     /**
      * This performs all the work. It makes an HTTP request, checks the response, and then gathers
      * up all the links on the page. Perform a searchForWord after the successful crawl
@@ -32,19 +32,23 @@ public class SpiderService {
      */
     public boolean crawl(String url) {
         try {
-            Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
+            Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).followRedirects(true).ignoreHttpErrors(true);
             Document htmlDocument = connection.get();
             this.htmlDocument = htmlDocument;
             if (connection.response().statusCode() == 200) // 200 is the HTTP OK status code indicating that everything is great.
             {
-                System.out.println("\n**Visiting** Received web page at " + url);
+                writeString("\n**Visiting** Received web page at " + url);
             }
             if (!connection.response().contentType().contains("text/html")) {
-                System.out.println("**Failure** Retrieved something other than HTML");
+                writeString("**Failure** Retrieved something other than HTML");
                 return false;
             }
             linksOnPage = htmlDocument.select("a[href]");
-            System.out.println("Found (" + linksOnPage.size() + ") links");
+            writeString("Found (" + linksOnPage.size() + ") links");
+            if (linksOnPage.size()==0){////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                System.out.println("Check bug!");
+                return false;
+            }
             for (Element link : linksOnPage) {
                 this.links.add(link.absUrl("href"));
             }
@@ -69,15 +73,14 @@ public class SpiderService {
         int count = 0;
         //   Defensive coding. This method should only be used after a successful crawl.
         if (this.htmlDocument == null) {
-            System.out.println("ERROR! Call crawl() before performing analysis on the document");
+            writeString("ERROR! Call crawl() before performing analysis on the document");
             return 0;
         }
-        System.out.println("Searching for the word " + word + "...");
+        writeString("Searching for the word " + word + "...");
 
         String str = this.htmlDocument.body().text();
-        Pattern pattern = Pattern.compile(word);
-        Matcher matcher = pattern.matcher(str);
 
+        Matcher matcher = WordValidator.check(word, str);
         while (matcher.find()) {
             count++;
         }

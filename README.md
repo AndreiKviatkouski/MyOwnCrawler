@@ -2,6 +2,7 @@
 Test task:  My Own Crawler
 ----------------------------------------------------
 ### The simplest web crawler
+
     https://github.com/AndreiKviatkouski/MyOwnCrawler.git
      
 Using
@@ -12,7 +13,7 @@ Using
 Building
 --------
  
- To build this project you will need Maven 2. You can get it at:
+ To build this project you will need Maven 4. You can get it at:
  
      http://maven.apache.org
 
@@ -24,6 +25,15 @@ Building
  
      mvn compile
      
+  Assembling:
+     
+     mvn clean assembly:assembly
+     
+     
+  Run application in the console:
+  
+     java -jar ${path to file}\MyOwnCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar -classpath by.AndreiKviatkouski.SpiderRun
+
   ## Technological Stack
      *   Java 11LS
      *   Project JSOUP 
@@ -32,3 +42,4 @@ Building
    
      
  ## Repo owner: Andrei Kviatkouski
+ 
