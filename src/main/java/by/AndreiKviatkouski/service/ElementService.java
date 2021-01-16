@@ -7,7 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 public class ElementService {
-
+    /**
+     * The method creates a new object with search data
+     *
+     * @param url The URL to visit
+     * @param words The words or strings to look for
+     * @param statistics The statistics to visit
+     * @return new element
+     */
 
     public Element create(String url, List<String> words, Map<String, Integer> statistics) {
         String param1 = words.get(0);
@@ -28,8 +35,12 @@ public class ElementService {
         return new Element(url, param1, value1, param2, value2, param3, value3, param4, value4, param5, value5);
     }
 
-
-    public void sortDown(List<Element> elements) {
+    /**
+     *The method sorts objects in descending order
+     *
+     * @param elements sorting object
+     */
+    public void sortDown(List<Element>elements) {
         Collections.sort(elements, Collections.reverseOrder(Element.compare));
     }
 }
