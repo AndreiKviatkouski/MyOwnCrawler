@@ -19,7 +19,7 @@ public class SpiderService {
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.60 YaBrowser/20.12.0.963 Yowser/2.5 Safari/537.36";
     private final List<String> links = new LinkedList<>();
-    private Document htmlDocument;
+    [protected Document htmlDocument;
     static Elements linksOnPage;
 
 

@@ -2,6 +2,7 @@ package by.AndreiKviatkouski;
 
 import by.AndreiKviatkouski.actions.SpiderAction;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +26,11 @@ public class SpiderRun {
         List<String> words = new ArrayList<>(Arrays.asList("Tesla", "Musk", "Gigafactory", "Elon Musk"));
 
         SpiderAction spider = new SpiderAction();
+// oytput="lala .cxs"
 
-        spider.openFile("C:\\Users\\andre\\Desktop\\MyOwnCrawler\\src\\main\\java\\by\\AndreiKviatkouski\\data\\NewData.csv");
+        //java filename.jar output="output.sorted.csv" url="http://en.wikipedia.org/wiki/Elon_Musk" worlds="world1 , world2"
+
+        spider.openFile("C:\\Users"+ File.pathSeparator+"andre\\Desktop\\MyOwnCrawler\\src\\main\\java\\by\\AndreiKviatkouski\\data\\NewData.csv");
         spider.setStartPage("http://en.wikipedia.org/wiki/Elon_Musk");
         spider.searchRecursive(words, 8, 1500);
         spider.closeFile();
