@@ -68,7 +68,7 @@ public class SpiderService {
 
     public int countWords(String word) {
         int count = 0;
-        //   Defensive coding. This method should only be used after a successful crawl.
+//           Defensive coding. This method should only be used after a successful crawl.
         if (this.htmlDocument == null) {
             writeString("ERROR! Call crawl() before performing analysis on the document");
             return 0;
@@ -76,17 +76,16 @@ public class SpiderService {
         writeString("Searching for the word " + word + "...");
 
         String str = this.htmlDocument.body().text();
-
+        if (str == null) {
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            return 0;
+        }
         Matcher matcher = WordValidator.check(word, str);
         while (matcher.find()) {
             count++;
         }
-        if (matcher.find()) {
-            System.out.println(word + "   count: " + count);
-            return count;
-        } else {
-            return 0;
-        }
+        writeString(word + "   count: " + count);
+        return count;
 
     }
 
