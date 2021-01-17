@@ -25,14 +25,10 @@ Building
  
      mvn compile
      
-  Assembling:
-     
-     mvn clean assembly:assembly
-     
-     
+ 
   Run application in the console:
   
-     java -jar ${path to file}\MyOwnCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar -classpath by.AndreiKviatkouski.SpiderRun
+      ${path to file}\mvn exec:java -Dexec.mainClass=by.AndreiKviatkouski.SpiderRun
 
   ## Technological Stack
      *   Java 11LS
