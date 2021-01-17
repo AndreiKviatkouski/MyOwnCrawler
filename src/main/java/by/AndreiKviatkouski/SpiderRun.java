@@ -26,9 +26,6 @@ public class SpiderRun {
         List<String> words = new ArrayList<>(Arrays.asList("Tesla", "Musk", "Gigafactory", "Elon Musk"));
 
         SpiderAction spider = new SpiderAction();
-// oytput="lala .cxs"
-
-        //java filename.jar output="output.sorted.csv" url="http://en.wikipedia.org/wiki/Elon_Musk" worlds="world1 , world2"
 
         spider.openFile("src\\main\\java\\by\\AndreiKviatkouski\\data\\NewData.csv");
 

@@ -30,7 +30,7 @@ class SpiderServiceTest {
 
 
     @Test
-    @DisplayName("Count words on page")
+    @DisplayName("Count words on page ")
     void countWords() {
 
         int elonCount = spiderService.countWords("Elon Musk");

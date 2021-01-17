@@ -13,7 +13,7 @@ Using
 Building
 --------
  
- To build this project you will need Maven 4. You can get it at:
+ To build this project you will need Maven 3. You can get it at:
  
      http://maven.apache.org
 
@@ -24,6 +24,10 @@ Building
  Compile:
  
      mvn compile
+     
+  Testing:
+  
+     mvn test
      
  
   Run application in the console:
