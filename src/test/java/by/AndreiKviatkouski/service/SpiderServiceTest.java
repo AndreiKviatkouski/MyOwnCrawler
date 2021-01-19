@@ -17,12 +17,15 @@ class SpiderServiceTest {
     private static SpiderService spiderService;
 
     @BeforeAll
-    static void setupPage() throws IOException {
+    static void setupPage() {
 
+        Document doc = null;
         File page = new File("src/test/resources/spider_service_count_worlds.html");
-
-        Document doc = Jsoup.parse(page, "utf-8");
-
+        try {
+            doc = Jsoup.parse(page, "utf-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         spiderService = new SpiderService();
         spiderService.htmlDocument = doc;
 

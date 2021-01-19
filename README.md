@@ -25,14 +25,14 @@ Building
  
      mvn compile
      
-  Testing:
+  Installing:
   
-     mvn test
+     mvn install
      
  
   Run application in the console:
   
-      ${path to file}\mvn exec:java -Dexec.mainClass=by.AndreiKviatkouski.SpiderRun
+      ${path to file}\mvn exec:java -Dexec.mainClass=by.AndreiKviatkouski.SpiderRun 
 
   ## Technological Stack
      *   Java 11LS

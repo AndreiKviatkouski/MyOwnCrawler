@@ -1,8 +1,9 @@
 package by.AndreiKviatkouski;
 
 import by.AndreiKviatkouski.actions.SpiderAction;
+import by.AndreiKviatkouski.util.Reader;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,8 @@ public class SpiderRun {
      */
 
     public static void main(String[] args) {
+
+        ArrayList<String>data=Reader.readFile(args);
 
         List<String> words = new ArrayList<>(Arrays.asList("Tesla", "Musk", "Gigafactory", "Elon Musk"));
 

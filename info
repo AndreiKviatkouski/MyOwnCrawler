@@ -3,17 +3,17 @@
 https://www.webcitation.org/641FKAALF?url=http://www.spaceflightnow.com/news/n0608/18cots/
 
 
- mvn clean test -Dtest=SuiteTest
-
+mvn clean test -Dtest=SuiteTest
 mvn test
-
 mvn test -Dtest=by.AndreiKviatkouski.SpiderServiceTest
 
  Assembling:
+ mvn clean assembly:assembly
 
-     mvn clean assembly:assembly
 
 
   Run application in the console:
 
      java -jar ${path to file}\MyOwnCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar -classpath by.AndreiKviatkouski.SpiderRun
+
+

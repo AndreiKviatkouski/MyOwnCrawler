@@ -18,7 +18,7 @@ class ElementServiceTest {
         List<String> words = new ArrayList<>(Arrays.asList("Tesla", "Musk", "Gigafactory", "Elon Musk"));
 
         Map<String, Integer> statistics = new HashMap<>();
-        ;
+
         for (int i = 0; i < words.size(); i++) {
             statistics.put(words.get(i), 10 * i);
         }
