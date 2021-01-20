@@ -76,10 +76,7 @@ public class SpiderService {
         writeString("Searching for the word " + word + "...");
 
         String str = this.htmlDocument.body().text();
-        if (str == null) {
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            return 0;
-        }
+
         Matcher matcher = WordValidator.check(word, str);
         while (matcher.find()) {
             count++;

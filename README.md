@@ -16,6 +16,17 @@ Building
  To build this project you will need Maven 3. You can get it at:
  
      http://maven.apache.org
+     
+ Adding property file to  ${path to file}\MyOwnCrawler\src\main\resources\config.properties
+ 
+ config.properties fields:
+ 
+     url = ${start url}
+     outputFile1 = ${path for statistics}
+     outputFile2 = ${path for sort statistics}
+     MAX_DEEP = ${number max deep links}
+     MAX_PAGES_TO_SEARCH = ${number max page to search}
+     words = ${search word1,search word2,search word3,search word4,}
 
  Clean compilation products:
  
@@ -32,7 +43,9 @@ Building
  
   Run application in the console:
   
-      ${path to file}\mvn exec:java -Dexec.mainClass=by.AndreiKviatkouski.SpiderRun 
+        java -jar ${path to file}\MyOwnCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar -classpath by.AndreiKviatkouski.SpiderRun
+        or  
+        ${path to file}\mvn exec:java -Dexec.mainClass=by.AndreiKviatkouski.SpiderRun 
 
   ## Technological Stack
      *   Java 11LS

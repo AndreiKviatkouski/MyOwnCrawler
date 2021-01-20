@@ -2,11 +2,18 @@ package by.AndreiKviatkouski;
 
 import by.AndreiKviatkouski.actions.SpiderAction;
 import by.AndreiKviatkouski.util.Reader;
+import by.AndreiKviatkouski.validator.PropertiesValidator;
+import by.AndreiKviatkouski.validator.WordValidator;
 
 import java.io.*;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Andrei Kviatkouski
@@ -24,19 +31,29 @@ public class SpiderRun {
 
     public static void main(String[] args) {
 
-        ArrayList<String>data=Reader.readFile(args);
 
-        List<String> words = new ArrayList<>(Arrays.asList("Tesla", "Musk", "Gigafactory", "Elon Musk"));
+        Properties property = Reader.getAllProperties("config.properties"); // get all properties from file
+
+        URL url = PropertiesValidator.checkUrl(property.getProperty("url"));
+        Path outputFile1 = PropertiesValidator.chekPath(property.getProperty("outputFile1"));
+        Path outputFile2 = PropertiesValidator.chekPath(property.getProperty("outputFile2"));
+        List<String> words = PropertiesValidator.checkWordsProperty
+                (property.getProperty("words"));
+        int MAX_DEEP = PropertiesValidator.checkPageAndDeep
+                (Integer.parseInt(property.getProperty("MAX_DEEP")));
+        int MAX_PAGES_TO_SEARCH = PropertiesValidator.checkPageAndDeep
+                (Integer.parseInt(property.getProperty("MAX_PAGES_TO_SEARCH")));
+
 
         SpiderAction spider = new SpiderAction();
 
-        spider.openFile("src\\main\\java\\by\\AndreiKviatkouski\\data\\NewData.csv");
+        spider.openFile(outputFile1);
 
-        spider.setStartPage("http://en.wikipedia.org/wiki/Elon_Musk");
-        spider.searchRecursive(words, 8, 15);
+        spider.setStartPage(url);
+        spider.searchRecursive(words, MAX_DEEP, MAX_PAGES_TO_SEARCH);
         spider.closeFile();
 
-        spider.openFile("src\\main\\java\\by\\AndreiKviatkouski\\data\\DataSort.csv");
+        spider.openFile(outputFile2);
         spider.printSortElementTopTen();
         spider.closeFile();
     }

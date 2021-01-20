@@ -5,5 +5,9 @@ public class Writer {
         System.out.println(str);
     }
 
+    public static void writeError(String str) {
+        System.err.println(str);
+    }
+
 }
 

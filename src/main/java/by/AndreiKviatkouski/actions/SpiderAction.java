@@ -7,6 +7,8 @@ import by.AndreiKviatkouski.service.SpiderService;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.*;
 
 import static by.AndreiKviatkouski.util.Writer.writeString;
@@ -31,8 +33,8 @@ public class SpiderAction {
      *
      * @param startUrl - The starting point of the spider
      */
-    public void setStartPage(String startUrl) {
-        this.unvisitedLinks.add(startUrl);
+    public void setStartPage(URL startUrl) {
+        this.unvisitedLinks.add(String.valueOf(startUrl));
     }
 
 
@@ -83,9 +85,9 @@ public class SpiderAction {
      *
      * @param file The file for writing
      */
-    public void openFile(String file) {
+    public void openFile(Path file) {
         try {
-            FileWriter fw = new FileWriter(file);
+            FileWriter fw = new FileWriter(String.valueOf(file));
             pw = new PrintWriter(fw);
         } catch (IOException e) {
             e.printStackTrace();

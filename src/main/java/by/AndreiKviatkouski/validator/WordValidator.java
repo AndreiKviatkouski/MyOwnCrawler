@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class WordValidator {
 
-    public static  Matcher check(String word, String str) {
+    public static Matcher check(String word, String str) {
         Pattern pattern = Pattern.compile(word);
         return pattern.matcher(str);
     }
