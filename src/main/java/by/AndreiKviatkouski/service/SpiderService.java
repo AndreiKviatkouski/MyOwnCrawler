@@ -43,6 +43,10 @@ public class SpiderService {
                 writeString("**Failure** Retrieved something other than HTML");
                 return false;
             }
+            Elements link1 = htmlDocument.select("a[href]");
+            for (Element element : link1) {
+                System.out.println(element.tagName() +" "+ element.attr("abs:href") +" " + element.attr("rel"));
+            }
             linksOnPage = htmlDocument.select("a[href]");
             writeString("Found (" + linksOnPage.size() + ") links");
 
