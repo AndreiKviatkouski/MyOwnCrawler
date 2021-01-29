@@ -1,58 +1,76 @@
 package by.AndreiKviatkouski.service;
 
-import by.AndreiKviatkouski.validator.WordValidator;
+import by.AndreiKviatkouski.entyties.Video;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static by.AndreiKviatkouski.util.Writer.writeString;
 
 public class SpiderService {
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.60 YaBrowser/20.12.0.963 Yowser/2.5 Safari/537.36";
-    private final List<String> links = new LinkedList<>();
     protected Document htmlDocument;
     static Elements linksOnPage;
+    private List<Video> listLinksVideo = new ArrayList<>();
 
     public boolean crawl(String url) {
         try {
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).followRedirects(true).ignoreHttpErrors(true);
             Document htmlDocument = connection.get();
             this.htmlDocument = htmlDocument;
-            if (connection.response().statusCode() == 200) // 200 is the HTTP OK status code indicating that everything is great.
-            {
+            if (connection.response().statusCode() == 200) {
                 writeString("\n**Visiting** Received web page at " + url);
             }
             if (!connection.response().contentType().contains("text/html")) {
                 writeString("**Failure** Retrieved something other than HTML");
                 return false;
             }
-            Elements link1 = htmlDocument.select("a[href]");
-            for (Element element : link1) {
-                System.out.println(element.tagName() +" "+ element.attr("abs:href") +" " + element.attr("rel"));
-            }
-            linksOnPage = htmlDocument.select("a[href]");
-            writeString("Found (" + linksOnPage.size() + ") links");
+            linksOnPage = htmlDocument.select(".video_item_title");
 
-            for (Element link : linksOnPage) {
-                this.links.add(link.absUrl("href"));
-            }
+            List<Video> videoList = createVideoList();
+
+            modifyVideoList(videoList);
+
             return true;
+
         } catch (IOException ioe) {
-            // We were not successful in our HTTP request
             return false;
         }
     }
 
+    private List<Video> createVideoList() {
+        listLinksVideo = linksOnPage.stream()
+                .map((element) -> new Video(element.attr("abs:href"), element.text()))
+                .distinct()
+                .sorted((video1, video2) -> video2.getName().substring(5, 7).compareTo(video1.getName().substring(5, 7)))
+                .collect(Collectors.toList());
+
+        listLinksVideo.forEach(System.out::println);
+        return listLinksVideo;
+    }
+
+    private void modifyVideoList(List<Video> videoList) {
+
+        videoList.stream()
+                .map(e->new Video(e.getUrl().replaceFirst("v","m.v"),e.getName()))
+                .forEach(System.out::println);
+
+
+    }
+
+
     public List<String> getLinks() {
-        return this.links;
+        List<String> arr = new ArrayList<>();
+        for (Video value : listLinksVideo) {
+            arr.add(value.getUrl());
+        }
+        return arr;
     }
 
 }

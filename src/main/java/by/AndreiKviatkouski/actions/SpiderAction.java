@@ -1,6 +1,6 @@
 package by.AndreiKviatkouski.actions;
 
-import by.AndreiKviatkouski.entyties.Element;
+import by.AndreiKviatkouski.entyties.Video;
 import by.AndreiKviatkouski.service.SpiderService;
 
 import java.io.FileWriter;
@@ -18,7 +18,7 @@ public class SpiderAction {
 
     private PrintWriter pw;
 
-    private final List<Element> elements = new ArrayList<>();
+    private final List<Video> elements = new ArrayList<>();
 
     public void setStartPage(URL startUrl) {
         this.unvisitedLinks.add(String.valueOf(startUrl));
@@ -37,14 +37,14 @@ public class SpiderAction {
         unvisitedLinks.remove(url);
 
 
-        if (pagesVisited.size() < MAX_PAGES_TO_SEARCH && deepStart < MAX_DEEP && !pagesVisited.contains(url)) {// start conditions
+        if (pagesVisited.size() < MAX_PAGES_TO_SEARCH && deepStart < MAX_DEEP && !pagesVisited.contains(url)) {
             leg.crawl(url);
 
             unvisitedLinks.addAll(leg.getLinks());
 
-            pagesVisited.add(url);// added link
+            pagesVisited.add(url);
 
-            printResult(url); // print
+            printResult(url);
 
             searchRecursive( deepStart + 1, MAX_PAGES_TO_SEARCH);
         }
