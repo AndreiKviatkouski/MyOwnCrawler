@@ -36,9 +36,7 @@ public class SpiderRun {
 
         URL url = PropertiesValidator.checkUrl(property.getProperty("url"));
         Path outputFile1 = PropertiesValidator.chekPath(property.getProperty("outputFile1"));
-        Path outputFile2 = PropertiesValidator.chekPath(property.getProperty("outputFile2"));
-        List<String> words = PropertiesValidator.checkWordsProperty
-                (property.getProperty("words"));
+        
         int MAX_DEEP = PropertiesValidator.checkPageAndDeep
                 (Integer.parseInt(property.getProperty("MAX_DEEP")));
         int MAX_PAGES_TO_SEARCH = PropertiesValidator.checkPageAndDeep
@@ -50,11 +48,8 @@ public class SpiderRun {
         spider.openFile(outputFile1);
 
         spider.setStartPage(url);
-        spider.searchRecursive(words, MAX_DEEP, MAX_PAGES_TO_SEARCH);
+        spider.searchRecursive(MAX_DEEP, MAX_PAGES_TO_SEARCH);
         spider.closeFile();
 
-        spider.openFile(outputFile2);
-        spider.printSortElementTopTen();
-        spider.closeFile();
     }
 }

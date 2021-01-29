@@ -15,21 +15,12 @@ import java.util.regex.Matcher;
 import static by.AndreiKviatkouski.util.Writer.writeString;
 
 public class SpiderService {
-    // We'll use a fake USER_AGENT so the web server thinks the robot is a normal web browser.
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.60 YaBrowser/20.12.0.963 Yowser/2.5 Safari/537.36";
     private final List<String> links = new LinkedList<>();
     protected Document htmlDocument;
     static Elements linksOnPage;
 
-
-    /**
-     * This performs all the work. It makes an HTTP request, checks the response, and then gathers
-     * up all the links on the page. Perform a searchForWord after the successful crawl
-     *
-     * @param url - The URL to visit
-     * @return whether or not the crawl was successful
-     */
     public boolean crawl(String url) {
         try {
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).followRedirects(true).ignoreHttpErrors(true);
@@ -59,37 +50,6 @@ public class SpiderService {
             return false;
         }
     }
-
-
-    /**
-     * Performs a search on the body of on the HTML document that is retrieved. This method should
-     * only be called after a successful crawl.
-     *
-     * @param word - The word or string to look for
-     * @return whether or not the word was found
-     */
-
-
-    public int countWords(String word) {
-        int count = 0;
-//           Defensive coding. This method should only be used after a successful crawl.
-        if (this.htmlDocument == null) {
-            writeString("ERROR! Call crawl() before performing analysis on the document");
-            return 0;
-        }
-        writeString("Searching for the word " + word + "...");
-
-        String str = this.htmlDocument.body().text();
-
-        Matcher matcher = WordValidator.check(word, str);
-        while (matcher.find()) {
-            count++;
-        }
-        writeString(word + "   count: " + count);
-        return count;
-
-    }
-
 
     public List<String> getLinks() {
         return this.links;
