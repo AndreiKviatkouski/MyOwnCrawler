@@ -35,7 +35,7 @@ public class SpiderRun {
         for (Video video : finishList) {
             System.out.println(RED + video + RESET + "\n");
 
-//            SpiderService.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
+            SpiderService.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
 
         }
 
