@@ -1,59 +1,73 @@
 package by.AndreiKviatkouski.service;
 
 import by.AndreiKviatkouski.entyties.Video;
+import com.github.axet.vget.VGet;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static by.AndreiKviatkouski.util.Writer.writeString;
+import static by.AndreiKviatkouski.util.ColorScheme.*;
 
 public class SpiderService {
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.60 YaBrowser/20.12.0.963 Yowser/2.5 Safari/537.36";
-    protected Document htmlDocument;
+
     static Elements linksOnPage;
-    private List<Video> listLinksVideo = new ArrayList<>();
-
-    public boolean crawl(String url) {
-        try {
-            Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).followRedirects(true).ignoreHttpErrors(true);
-            Document htmlDocument = connection.get();
-            this.htmlDocument = htmlDocument;
-            if (connection.response().statusCode() == 200) {
-                writeString("\n**Visiting** Received web page at " + url);
-            }
-            if (!connection.response().contentType().contains("text/html")) {
-                writeString("**Failure** Retrieved something other than HTML");
-                return false;
-            }
-            linksOnPage = htmlDocument.select(".video_item_title");
-
-            return true;
-
-        } catch (IOException ioe) {
-            return false;
-        }
-    }
 
 
     public static void main(String[] args) {
 
 
         SpiderService spiderService = new SpiderService();
-        spiderService.crawl("https://vk.com/videos-111905078?section=album_115", ".video_item_title");
-        List<Video> videoList = spiderService.createVideoList();
-        List<Video> modifiedVideoList = spiderService.modifyVideoList(videoList);
-        for (Video video : modifiedVideoList) {
-           Elements media = spiderService.crawl(video.getUrl(), "[src]");
-           media.forEach(System.out::println);
-            spiderService.createDownloadVideoList(media);
+
+        Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_115", ".video_item_title");
+
+        List<Video> listVideoLinks = spiderService.createVideoList(onIndexPage);
+//        listVideoLinks.forEach(System.out::println);
+//        System.out.println(YELLOW_BOLD + "_____________________________________________________________________________________" + RESET);
+
+
+        List<Video> modifiedListVideoLinks = spiderService.createModifyVideoList(listVideoLinks);
+        modifiedListVideoLinks.forEach(System.out::println);
+        System.out.println(YELLOW_BOLD + "_____________________________________________________________________________________" + RESET);
+
+        List<Video> finishList = spiderService.getFinishDownloadList(modifiedListVideoLinks);
+        for (Video video : finishList) {
+            System.out.println(RED + video + RESET);
         }
 
+        try {
+            String url = "https://pvv4.vkuservideo.net/c500602/3/ef7OjU-NjU2OzY/videos/2f35a30306.720.mp4";
+            String path = "C:";
+            VGet v = new VGet(new URL(url), new File(path));
+            v.download();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+    private List<Video> getFinishDownloadList(List<Video> modifiedListVideoLinks) {
+        List<Video> finishList = new ArrayList<>();
+        Elements media = null;
+        for (Video video : modifiedListVideoLinks) {
+             media = crawl(video.getUrl(), "script");
+            finishList = createDownloadVideoList(media);
+        }
+        System.out.println(RED + media.get(0) +RESET);
+        return finishList;
     }
 
 
@@ -61,12 +75,12 @@ public class SpiderService {
         try {
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).followRedirects(true).ignoreHttpErrors(true);
             Document htmlDocument = connection.get();
-            this.htmlDocument = htmlDocument;
+
             if (connection.response().statusCode() == 200) {
-                writeString("\n**Visiting** Received web page at " + url);
+                writeString(YELLOW_BOLD + "\n**Visiting** Received web page at " + RESET + url);
             }
             if (!connection.response().contentType().contains("text/html")) {
-                writeString("**Failure** Retrieved something other than HTML");
+                writeString(RED_BOLD + "**Failure** Retrieved something other than HTML" + RESET);
             }
             linksOnPage = htmlDocument.select(cssQuery);
 
@@ -77,45 +91,27 @@ public class SpiderService {
     }
 
     private List<Video> createDownloadVideoList(Elements elements) {
-        List<Video> downloadList = elements.stream()
-                .filter(element -> element.normalName().equals("source"))
-                .map((element) -> new Video(element.attr("abs:src")))
+
+        return elements.stream()
+                .map((element) -> new Video(element.attr("abs:src"), element.text()))
                 .distinct()
                 .collect(Collectors.toList());
-
-        downloadList.forEach(System.out::println);
-        return downloadList;
     }
 
-    private List<Video> createVideoList() {
-        listLinksVideo = linksOnPage.stream()
+    private List<Video> createVideoList(Elements elements) {
+
+        return elements.stream()
                 .map((element) -> new Video(element.attr("abs:href"), element.text()))
                 .distinct()
                 .sorted((video1, video2) -> video2.getName().substring(5, 7).compareTo(video1.getName().substring(5, 7)))
                 .collect(Collectors.toList());
-
-        listLinksVideo.forEach(System.out::println);
-        return listLinksVideo;
     }
 
-    private List<Video> modifyVideoList(List<Video> videoList) {
+    private List<Video> createModifyVideoList(List<Video> videoList) {
 
-        List<Video> modifiedListVideo = videoList.stream()
+        return videoList.stream()
                 .map(e -> new Video(e.getUrl().replaceFirst("v", "m.v"), e.getName()))
                 .collect(Collectors.toList());
-
-        modifiedListVideo.forEach(System.out::println);
-
-        return modifiedListVideo;
-    }
-
-
-    public List<String> getLinks() {
-        List<String> arr = new ArrayList<>();
-        for (Video value : listLinksVideo) {
-            arr.add(value.getUrl());
-        }
-        return arr;
     }
 
 }
