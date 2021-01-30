@@ -1,6 +1,7 @@
 package by.AndreiKviatkouski.service;
 
 import by.AndreiKviatkouski.entyties.Video;
+import by.AndreiKviatkouski.util.Writer;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,18 +33,18 @@ public class SpiderService {
 
 
         if (url == null) {
-            System.out.println("Empty URL");
+            Writer.writeString("Empty URL");
             return;
         }
         long start = System.currentTimeMillis();
 
         try (InputStream in = URI.create(url).toURL().openStream()) {
             Files.copy(in, Paths.get(fileName.concat(".mp4")));
-            System.out.println("File copy time = " + ((System.currentTimeMillis() - start) / 1000) + "сек");
+            Writer.writeString("File copy time = " + ((System.currentTimeMillis() - start) / 1000) + "сек" + "\n");
         } catch (FileAlreadyExistsException e) {
-            System.out.println(YELLOW_BOLD + "File already exist!" + RESET);
+            Writer.writeString(YELLOW_BOLD + "File already exist!" + RESET);
         } catch (InvalidPathException e) {
-            System.out.println(YELLOW_BOLD + "Invalid path!" + RESET);
+            Writer.writeString(YELLOW_BOLD + "Invalid path!" + RESET);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,7 +80,7 @@ public class SpiderService {
             media = crawl(video.getUrl(), "[src*=.mp4]");
             
             System.out.println(media);
-            System.out.println(GREEN_UNDERLINED +"____________________________________________________________________________________________________________________"+ RESET);
+            writeString(GREEN_UNDERLINED +"____________________________________________________________________________________________________________________"+ RESET);
             String link = createDownloadLink(media);// return first link from modifiedLinkList
             finishList.add(new Video(video.getUrl(), video.getName(), link));
         }
@@ -90,7 +91,7 @@ public class SpiderService {
 
         String link = null;
         for (Element element : elements) {
-            link = element.attr("abs:href");
+            link = element.attr("abs:src");
         }
 
         return link;
@@ -106,7 +107,6 @@ public class SpiderService {
     }
 
     public List<Video> modifyLinkList(List<Video> videoList) {
-//        view-source:h
         return videoList.stream()
                 .map(e -> new Video(e.getUrl().replaceFirst("v", "m.v"), e.getName()))
                 .collect(Collectors.toList());

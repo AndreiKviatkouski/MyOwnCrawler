@@ -28,12 +28,12 @@ public class SpiderRun {
         List<Video> modifiedListVideoLinks = spiderService.modifyLinkList(listVideoLinks);
 
 
-        System.out.println(PURPLE_BOLD + "Files for download: " + modifiedListVideoLinks.size() + RESET);
+        Writer.writeString(PURPLE_BOLD + "Files for download: " + modifiedListVideoLinks.size() + RESET);
         modifiedListVideoLinks.stream().map(video -> video.getName() + " " + video.getUrl()).forEach(System.out::println);
 
         List<Video> finishList = spiderService.getFinishDownloadList(modifiedListVideoLinks);
         for (Video video : finishList) {
-            System.out.println(RED + video + RESET + "\n");
+            Writer.writeString(RED + video + RESET );
 
             SpiderService.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
 
