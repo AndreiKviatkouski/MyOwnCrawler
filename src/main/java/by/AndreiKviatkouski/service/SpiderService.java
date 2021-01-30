@@ -10,9 +10,14 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,16 +52,22 @@ public class SpiderService {
             System.out.println(RED + video + RESET);
         }
 
-        try {
-            String url = "https://pvv4.vkuservideo.net/c500602/3/ef7OjU-NjU2OzY/videos/2f35a30306.720.mp4";
-            String path = "C:";
-            VGet v = new VGet(new URL(url), new File(path));
-            v.download();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        downloadVideo("https://pvv4.vkuservideo.net/c500602/3/ef7OjU-NjU2OzY/videos/2f35a30306.720.mp4","fileName2");
+
+
     }
 
+    private static void downloadVideo(String url,String fileName) {
+
+        long start = System.currentTimeMillis();
+
+        try (InputStream in = URI.create(url).toURL().openStream()) {
+            Files.copy(in, Paths.get(fileName.concat(".mp4")));
+            System.out.println("Время копирования файла = "+((System.currentTimeMillis()-start)/1000) + "сек");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     private List<Video> getFinishDownloadList(List<Video> modifiedListVideoLinks) {
