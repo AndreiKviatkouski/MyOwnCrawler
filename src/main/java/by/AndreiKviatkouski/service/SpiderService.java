@@ -2,7 +2,6 @@ package by.AndreiKviatkouski.service;
 
 import by.AndreiKviatkouski.entyties.Video;
 import by.AndreiKviatkouski.util.Writer;
-import by.AndreiKviatkouski.validator.PropertiesValidator;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 
 import static by.AndreiKviatkouski.util.ColorScheme.*;
 import static by.AndreiKviatkouski.util.Writer.writeString;
-import static by.AndreiKviatkouski.validator.PropertiesValidator.*;
 
 public class SpiderService {
     private static final String USER_AGENT =
@@ -31,36 +29,7 @@ public class SpiderService {
     static Elements linksOnPage;
 
 
-    public static void main(String[] args) {
-
-
-        SpiderService spiderService = new SpiderService();
-//        https://vk.com/videos-111905078?section=album_273
-        Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_273", ".video_item_title");
-
-        List<Video> listVideoLinks = spiderService.createLinkList(onIndexPage);
-
-        List<Video> modifiedListVideoLinks = spiderService.modifyLinkList(listVideoLinks);
-
-
-        System.out.println(PURPLE_BOLD + "Files for download: " + modifiedListVideoLinks.size() + RESET);
-        modifiedListVideoLinks.stream().map(video -> video.getName() + " " + video.getUrl()).forEach(System.out::println);
-
-        List<Video> finishList = spiderService.getFinishDownloadList(modifiedListVideoLinks);
-        for (Video video : finishList) {
-            System.out.println(RED + video + RESET + "\n");
-
-            downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
-
-//            downloadVideo("https://pvv4.vkuservideo.net/c500602/3/ef7OjU-NjU2OzY/videos/2f35a30306.720.mp4","src\\main\\java\\by\\AndreiKviatkouski\\video\\");
-
-        }
-
-        Writer.writeError(YELLOW_BOLD +"WELL DONE JOB!");
-    }
-
-
-    private static void downloadVideo(String url, String fileName) {
+    public static void downloadVideo(String url, String fileName) {
 
 
         if (url == null) {
@@ -101,7 +70,7 @@ public class SpiderService {
         return linksOnPage;
     }
 
-    private List<Video> getFinishDownloadList(List<Video> modifiedLinkList) {
+    public List<Video> getFinishDownloadList(List<Video> modifiedLinkList) {
 
         List<Video> finishList = new ArrayList<>();
 
@@ -124,7 +93,7 @@ public class SpiderService {
         return link;
     }
 
-    private List<Video> createLinkList(Elements elements) {
+    public List<Video> createLinkList(Elements elements) {
 
         return elements.stream()
                 .map((element) -> new Video(element.attr("abs:href"), element.text()))
@@ -133,7 +102,7 @@ public class SpiderService {
                 .collect(Collectors.toList());
     }
 
-    private List<Video> modifyLinkList(List<Video> videoList) {
+    public List<Video> modifyLinkList(List<Video> videoList) {
 
         return videoList.stream()
                 .map(e -> new Video(e.getUrl().replaceFirst("v", "m.v"), e.getName()))

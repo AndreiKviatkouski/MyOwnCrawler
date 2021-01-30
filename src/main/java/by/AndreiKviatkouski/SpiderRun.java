@@ -1,37 +1,44 @@
 package by.AndreiKviatkouski;
 
-import by.AndreiKviatkouski.actions.SpiderAction;
-import by.AndreiKviatkouski.util.Reader;
-import by.AndreiKviatkouski.validator.PropertiesValidator;
+import by.AndreiKviatkouski.entyties.Video;
+import by.AndreiKviatkouski.service.SpiderService;
+import by.AndreiKviatkouski.util.Writer;
+import org.jsoup.select.Elements;
 
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.Properties;
+import java.util.List;
+
+import static by.AndreiKviatkouski.util.ColorScheme.*;
 
 
 public class SpiderRun {
 
     public static void main(String[] args) {
 
-
-        Properties property = Reader.getAllProperties("config.properties"); // get all properties from file
-
-        URL url = PropertiesValidator.checkUrl(property.getProperty("url"));
-        Path outputFile1 = PropertiesValidator.chekPath(property.getProperty("outputFile1"));
-        
-        int MAX_DEEP = PropertiesValidator.checkPageAndDeep
-                (Integer.parseInt(property.getProperty("MAX_DEEP")));
-        int MAX_PAGES_TO_SEARCH = PropertiesValidator.checkPageAndDeep
-                (Integer.parseInt(property.getProperty("MAX_PAGES_TO_SEARCH")));
+//        https://vk.com/videos-111905078?section=album_273
+//        https://vk.com/videos-111905078?section=album_115
+//        "https://pvv4.vkuservideo.net/c500602/3/ef7OjU-NjU2OzY/videos/2f35a30306.720.mp4"
 
 
-//        SpiderAction spider = new SpiderAction();
-//
-//        spider.openFile(outputFile1);
-//
-//        spider.setStartPage(url);
-//        spider.searchRecursive(MAX_DEEP, MAX_PAGES_TO_SEARCH);
-//        spider.closeFile();
+        SpiderService spiderService = new SpiderService();
 
+        Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_273", ".video_item_title");
+
+        List<Video> listVideoLinks = spiderService.createLinkList(onIndexPage);
+
+        List<Video> modifiedListVideoLinks = spiderService.modifyLinkList(listVideoLinks);
+
+
+        System.out.println(PURPLE_BOLD + "Files for download: " + modifiedListVideoLinks.size() + RESET);
+        modifiedListVideoLinks.stream().map(video -> video.getName() + " " + video.getUrl()).forEach(System.out::println);
+
+        List<Video> finishList = spiderService.getFinishDownloadList(modifiedListVideoLinks);
+        for (Video video : finishList) {
+            System.out.println(RED + video + RESET + "\n");
+
+//            SpiderService.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
+
+        }
+
+        Writer.writeError(YELLOW_BOLD +"WELL DONE JOB!");
     }
 }
