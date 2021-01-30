@@ -62,7 +62,7 @@ public class PropertiesValidator {
         } catch (MalformedURLException e) {
             e.printStackTrace();// the URL is not in a valid form
         } catch (IOException e) {
-            e.printStackTrace();// the connection couldn't be established
+           Writer.writeError("Invalid URL!");// the connection couldn't be established
         }
         return url;
     }

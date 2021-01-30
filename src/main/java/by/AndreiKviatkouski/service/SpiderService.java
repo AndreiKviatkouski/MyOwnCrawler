@@ -1,32 +1,32 @@
 package by.AndreiKviatkouski.service;
 
 import by.AndreiKviatkouski.entyties.Video;
-import com.github.axet.vget.VGet;
+import by.AndreiKviatkouski.util.Writer;
+import by.AndreiKviatkouski.validator.PropertiesValidator;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static by.AndreiKviatkouski.util.Writer.writeString;
 import static by.AndreiKviatkouski.util.ColorScheme.*;
+import static by.AndreiKviatkouski.util.Writer.writeString;
+import static by.AndreiKviatkouski.validator.PropertiesValidator.*;
 
 public class SpiderService {
     private static final String USER_AGENT =
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.60 YaBrowser/20.12.0.963 Yowser/2.5 Safari/537.36";
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36";
 
     static Elements linksOnPage;
 
@@ -35,49 +35,50 @@ public class SpiderService {
 
 
         SpiderService spiderService = new SpiderService();
+//        https://vk.com/videos-111905078?section=album_273
+        Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_273", ".video_item_title");
 
-        Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_115", ".video_item_title");
+        List<Video> listVideoLinks = spiderService.createLinkList(onIndexPage);
 
-        List<Video> listVideoLinks = spiderService.createVideoList(onIndexPage);
+        List<Video> modifiedListVideoLinks = spiderService.modifyLinkList(listVideoLinks);
 
 
-
-        List<Video> modifiedListVideoLinks = spiderService.createModifyVideoList(listVideoLinks);
-        modifiedListVideoLinks.forEach(System.out::println);
-        System.out.println(YELLOW_BOLD + "_____________________________________________________________________________________" + RESET);
+        System.out.println(PURPLE_BOLD + "Files for download: " + modifiedListVideoLinks.size() + RESET);
+        modifiedListVideoLinks.stream().map(video -> video.getName() + " " + video.getUrl()).forEach(System.out::println);
 
         List<Video> finishList = spiderService.getFinishDownloadList(modifiedListVideoLinks);
         for (Video video : finishList) {
-            System.out.println(RED + video + RESET);
+            System.out.println(RED + video + RESET + "\n");
+
+            downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
+
+//            downloadVideo("https://pvv4.vkuservideo.net/c500602/3/ef7OjU-NjU2OzY/videos/2f35a30306.720.mp4","src\\main\\java\\by\\AndreiKviatkouski\\video\\");
+
         }
 
-        downloadVideo("https://pvv4.vkuservideo.net/c500602/3/ef7OjU-NjU2OzY/videos/2f35a30306.720.mp4","fileName2");
-
-
+        Writer.writeError(YELLOW_BOLD +"WELL DONE JOB!");
     }
 
-    private static void downloadVideo(String url,String fileName) {
 
+    private static void downloadVideo(String url, String fileName) {
+
+
+        if (url == null) {
+            System.out.println("Empty URL");
+            return;
+        }
         long start = System.currentTimeMillis();
 
         try (InputStream in = URI.create(url).toURL().openStream()) {
             Files.copy(in, Paths.get(fileName.concat(".mp4")));
-            System.out.println("Время копирования файла = "+((System.currentTimeMillis()-start)/1000) + "сек");
+            System.out.println("Время копирования файла = " + ((System.currentTimeMillis() - start) / 1000) + "сек");
+        } catch (FileAlreadyExistsException e) {
+            System.out.println(YELLOW_BOLD + "File already exist!" + RESET);
+        } catch (InvalidPathException e) {
+            System.out.println(YELLOW_BOLD + "Invalid path!" + RESET);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-    private List<Video> getFinishDownloadList(List<Video> modifiedListVideoLinks) {
-        List<Video> finishList = new ArrayList<>();
-        Elements media = null;
-        for (Video video : modifiedListVideoLinks) {
-             media = crawl(video.getUrl(), "script");
-            finishList = createDownloadVideoList(media);
-        }
-        System.out.println(RED + media.get(0) +RESET);
-        return finishList;
     }
 
 
@@ -100,15 +101,30 @@ public class SpiderService {
         return linksOnPage;
     }
 
-    private List<Video> createDownloadVideoList(Elements elements) {
+    private List<Video> getFinishDownloadList(List<Video> modifiedLinkList) {
 
-        return elements.stream()
-                .map((element) -> new Video(element.attr("abs:src"), element.text()))
-                .distinct()
-                .collect(Collectors.toList());
+        List<Video> finishList = new ArrayList<>();
+
+        Elements media;
+        for (Video video : modifiedLinkList) {
+            media = crawl(video.getUrl(), "[src*=.mp4]");
+            String link = createDownloadLink(media);// return first link from modifiedLinkList
+            finishList.add(new Video(video.getUrl(), video.getName(), link));
+        }
+        return finishList;
     }
 
-    private List<Video> createVideoList(Elements elements) {
+    private String createDownloadLink(Elements elements) {
+
+        String link = null;
+        for (Element element : elements) {
+            link = element.attr("abs:src");
+        }
+
+        return link;
+    }
+
+    private List<Video> createLinkList(Elements elements) {
 
         return elements.stream()
                 .map((element) -> new Video(element.attr("abs:href"), element.text()))
@@ -117,7 +133,7 @@ public class SpiderService {
                 .collect(Collectors.toList());
     }
 
-    private List<Video> createModifyVideoList(List<Video> videoList) {
+    private List<Video> modifyLinkList(List<Video> videoList) {
 
         return videoList.stream()
                 .map(e -> new Video(e.getUrl().replaceFirst("v", "m.v"), e.getName()))
