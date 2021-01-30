@@ -33,15 +33,58 @@ public class SpiderService {
             }
             linksOnPage = htmlDocument.select(".video_item_title");
 
-            List<Video> videoList = createVideoList();
-
-            modifyVideoList(videoList);
-
             return true;
 
         } catch (IOException ioe) {
             return false;
         }
+    }
+
+
+    public static void main(String[] args) {
+
+
+        SpiderService spiderService = new SpiderService();
+        spiderService.crawl("https://vk.com/videos-111905078?section=album_115", ".video_item_title");
+        List<Video> videoList = spiderService.createVideoList();
+        List<Video> modifiedVideoList = spiderService.modifyVideoList(videoList);
+        for (Video video : modifiedVideoList) {
+           Elements media = spiderService.crawl(video.getUrl(), "[src]");
+           media.forEach(System.out::println);
+            spiderService.createDownloadVideoList(media);
+        }
+
+    }
+
+
+    public Elements crawl(String url, String cssQuery) {
+        try {
+            Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).followRedirects(true).ignoreHttpErrors(true);
+            Document htmlDocument = connection.get();
+            this.htmlDocument = htmlDocument;
+            if (connection.response().statusCode() == 200) {
+                writeString("\n**Visiting** Received web page at " + url);
+            }
+            if (!connection.response().contentType().contains("text/html")) {
+                writeString("**Failure** Retrieved something other than HTML");
+            }
+            linksOnPage = htmlDocument.select(cssQuery);
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return linksOnPage;
+    }
+
+    private List<Video> createDownloadVideoList(Elements elements) {
+        List<Video> downloadList = elements.stream()
+                .filter(element -> element.normalName().equals("source"))
+                .map((element) -> new Video(element.attr("abs:src")))
+                .distinct()
+                .collect(Collectors.toList());
+
+        downloadList.forEach(System.out::println);
+        return downloadList;
     }
 
     private List<Video> createVideoList() {
@@ -55,13 +98,15 @@ public class SpiderService {
         return listLinksVideo;
     }
 
-    private void modifyVideoList(List<Video> videoList) {
+    private List<Video> modifyVideoList(List<Video> videoList) {
 
-        videoList.stream()
-                .map(e->new Video(e.getUrl().replaceFirst("v","m.v"),e.getName()))
-                .forEach(System.out::println);
+        List<Video> modifiedListVideo = videoList.stream()
+                .map(e -> new Video(e.getUrl().replaceFirst("v", "m.v"), e.getName()))
+                .collect(Collectors.toList());
 
+        modifiedListVideo.forEach(System.out::println);
 
+        return modifiedListVideo;
     }
 
 

@@ -25,13 +25,13 @@ public class SpiderRun {
                 (Integer.parseInt(property.getProperty("MAX_PAGES_TO_SEARCH")));
 
 
-        SpiderAction spider = new SpiderAction();
-
-        spider.openFile(outputFile1);
-
-        spider.setStartPage(url);
-        spider.searchRecursive(MAX_DEEP, MAX_PAGES_TO_SEARCH);
-        spider.closeFile();
+//        SpiderAction spider = new SpiderAction();
+//
+//        spider.openFile(outputFile1);
+//
+//        spider.setStartPage(url);
+//        spider.searchRecursive(MAX_DEEP, MAX_PAGES_TO_SEARCH);
+//        spider.closeFile();
 
     }
 }

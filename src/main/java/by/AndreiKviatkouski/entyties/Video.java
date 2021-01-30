@@ -21,4 +21,7 @@ public class Video {
             return (el1.getName().compareToIgnoreCase(el2.getName()));
         }
     };
+
+    public Video(String attr) {
+    }
 }
