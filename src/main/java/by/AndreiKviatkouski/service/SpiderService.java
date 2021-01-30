@@ -39,8 +39,7 @@ public class SpiderService {
         Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_115", ".video_item_title");
 
         List<Video> listVideoLinks = spiderService.createVideoList(onIndexPage);
-//        listVideoLinks.forEach(System.out::println);
-//        System.out.println(YELLOW_BOLD + "_____________________________________________________________________________________" + RESET);
+
 
 
         List<Video> modifiedListVideoLinks = spiderService.createModifyVideoList(listVideoLinks);
