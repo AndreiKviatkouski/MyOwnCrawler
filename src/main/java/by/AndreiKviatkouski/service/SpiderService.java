@@ -78,8 +78,7 @@ public class SpiderService {
         Elements media;
         for (Video video : modifiedLinkList) {
             media = crawl(video.getUrl(), "[src*=.mp4]");
-            
-            System.out.println(media);
+
             writeString(GREEN_UNDERLINED +"____________________________________________________________________________________________________________________"+ RESET);
             String link = createDownloadLink(media);// return first link from modifiedLinkList
             finishList.add(new Video(video.getUrl(), video.getName(), link));

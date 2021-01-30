@@ -33,12 +33,16 @@ public class SpiderRun {
 
         List<Video> finishList = spiderService.getFinishDownloadList(modifiedListVideoLinks);
         for (Video video : finishList) {
-            Writer.writeString(RED + video + RESET );
+            Writer.writeString(RED + video + RESET);
 
             SpiderService.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
 
         }
-
-        Writer.writeError(YELLOW_BOLD +"WELL DONE JOB!");
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Writer.writeError(YELLOW_BOLD + "WELL DONE JOB!");
     }
 }
