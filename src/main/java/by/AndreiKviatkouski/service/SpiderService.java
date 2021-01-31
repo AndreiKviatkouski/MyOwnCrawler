@@ -29,29 +29,37 @@ public class SpiderService {
     static Elements linksOnPage;
 
 
-    public static void downloadVideo(String url, String fileName) {
 
+    public static void main(String[] args) {
+        crawl2();
 
-        if (url == null) {
-            Writer.writeString("Empty URL");
-            return;
+    }
+    public static Elements crawl2(){
+        String url = "view-source:https://m.vk.com/video-111905078_456246013";
+        String cssQuery = "[src*=.mp4]";
+        try {
+            Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).followRedirects(true).ignoreHttpErrors(true);
+            Document htmlDocument = connection.get();
+
+            if (connection.response().statusCode() == 200) {
+                writeString(YELLOW_BOLD + "\n**Visiting** Received web page at " + RESET + url);
+            }
+            if (!connection.response().contentType().contains("text/html")) {
+                writeString(RED_BOLD + "**Failure** Retrieved something other than HTML" + RESET);
+            }
+            linksOnPage = htmlDocument.select(cssQuery);
+            System.out.println(linksOnPage);
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
-        long start = System.currentTimeMillis();
-
-        try (InputStream in = URI.create(url).toURL().openStream()) {
-            Files.copy(in, Paths.get(fileName.concat(".mp4")));
-            Writer.writeString("File copy time = " + ((System.currentTimeMillis() - start) / 1000) + "сек" + "\n");
-        } catch (FileAlreadyExistsException e) {
-            Writer.writeString(YELLOW_BOLD + "File already exist!" + RESET);
-        } catch (InvalidPathException e) {
-            Writer.writeString(YELLOW_BOLD + "Invalid path!" + RESET);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return linksOnPage;
     }
 
 
-    public Elements crawl(String url, String cssQuery) {
+//    Я использую Java. Я хочу получить исходный код веб-страницы, но на странице работает JavaScript, и я хочу получить код,
+//    сгенерированный JavaScript (код, который мы видим в firebug в firefox) Кто-нибудь знает, что я должен делать?
+  public Elements crawl(String url, String cssQuery) {
         try {
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).followRedirects(true).ignoreHttpErrors(true);
             Document htmlDocument = connection.get();
@@ -83,6 +91,7 @@ public class SpiderService {
             String link = createDownloadLink(media);// return first link from modifiedLinkList
             finishList.add(new Video(video.getUrl(), video.getName(), link));
         }
+
         return finishList;
     }
 

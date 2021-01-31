@@ -35,9 +35,11 @@ public class SpiderRun {
         for (Video video : finishList) {
             Writer.writeString(RED + video + RESET);
 
-            SpiderService.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
+            Downloader.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
 
         }
+
+        
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
