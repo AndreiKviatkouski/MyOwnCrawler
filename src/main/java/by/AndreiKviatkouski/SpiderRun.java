@@ -21,7 +21,7 @@ public class SpiderRun {
 
         SpiderService spiderService = new SpiderService();
 
-        Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_273", ".video_item_title");
+        Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_115", ".video_item_title");
 
         List<Video> listVideoLinks = spiderService.createLinkList(onIndexPage);
 
@@ -35,7 +35,7 @@ public class SpiderRun {
         for (Video video : finishList) {
             Writer.writeString(RED + video + RESET);
 
-            Downloader.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
+//            Downloader.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
 
         }
 
