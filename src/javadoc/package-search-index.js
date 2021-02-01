@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"by.AndreiKviatkouski"},{"l":"by.AndreiKviatkouski.actions"},{"l":"by.AndreiKviatkouski.entyties"},{"l":"by.AndreiKviatkouski.service"},{"l":"by.AndreiKviatkouski.util"},{"l":"by.AndreiKviatkouski.validator"}]

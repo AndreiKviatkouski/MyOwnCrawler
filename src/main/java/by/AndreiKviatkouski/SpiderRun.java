@@ -1,6 +1,7 @@
 package by.AndreiKviatkouski;
 
 import by.AndreiKviatkouski.entyties.Video;
+import by.AndreiKviatkouski.service.Downloader;
 import by.AndreiKviatkouski.service.SpiderService;
 import by.AndreiKviatkouski.util.Writer;
 import org.jsoup.select.Elements;
@@ -14,32 +15,27 @@ public class SpiderRun {
 
     public static void main(String[] args) {
 
-//        https://vk.com/videos-111905078?section=album_273
-//        https://vk.com/videos-111905078?section=album_115
-//        "https://pvv4.vkuservideo.net/c500602/3/ef7OjU-NjU2OzY/videos/2f35a30306.720.mp4"
-
-
         SpiderService spiderService = new SpiderService();
+        Downloader downloader = new Downloader();
 
-        Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_115", ".video_item_title");
+        Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_115",
+                ".video_item_info");
 
-        List<Video> listVideoLinks = spiderService.createLinkList(onIndexPage);
+        List<Video> startLinks = spiderService.createStartLinkList(onIndexPage);
 
-        List<Video> modifiedListVideoLinks = spiderService.modifyLinkList(listVideoLinks);
+        List<Video> modifiedLinks = spiderService.modifyLinkList(startLinks);
 
 
-        Writer.writeString(PURPLE_BOLD + "Files for download: " + modifiedListVideoLinks.size() + RESET);
-        modifiedListVideoLinks.stream().map(video -> video.getName() + " " + video.getUrl()).forEach(System.out::println);
+        Writer.writeString(PURPLE_BOLD + "Files for download: " + modifiedLinks.size() + " elements "  + RESET);
+        modifiedLinks.stream().map(video -> video.getName() + " " + video.getUrl()).forEach(System.out::println);
 
-        List<Video> finishList = spiderService.getFinishDownloadList(modifiedListVideoLinks);
+        List<Video> finishList = spiderService.getFinishDownloadList(modifiedLinks);
         for (Video video : finishList) {
             Writer.writeString(RED + video + RESET);
 
-//            Downloader.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
+           downloader.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
 
         }
-
-        
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {

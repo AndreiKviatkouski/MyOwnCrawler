@@ -1,43 +1,39 @@
 package by.AndreiKviatkouski.service;
 
 import by.AndreiKviatkouski.entyties.Video;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static by.AndreiKviatkouski.util.ColorScheme.*;
+import static by.AndreiKviatkouski.util.ColorScheme.GREEN_UNDERLINED;
+import static by.AndreiKviatkouski.util.ColorScheme.RESET;
 import static by.AndreiKviatkouski.util.Writer.writeString;
 
 public class SpiderService {
-    private static final String USER_AGENT =
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36";
 
     Elements linksOnPage;
 
     public Elements crawl(String url, String cssQuery) {
 
-        try {
-            Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).followRedirects(true).ignoreHttpErrors(true);
-            Document htmlDocument = connection.get();
+        System.setProperty("webdriver.chrome.driver",
+                "src\\main\\java\\by\\AndreiKviatkouski\\chromedriver\\chromedriver.exe");
+        WebDriver driver = new ChromeDriver();
+        driver.get(url);
 
-            if (connection.response().statusCode() == 200) {
-                writeString(YELLOW_BOLD + "\n**Visiting** Received web page at " + RESET + url);
-            }
-            if (!connection.response().contentType().contains("text/html")) {
-                writeString(RED_BOLD + "**Failure** Retrieved something other than HTML" + RESET);
-            }
-            linksOnPage = htmlDocument.select(cssQuery);
+        Document htmlDocument = Jsoup.parse(driver.getPageSource());
 
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+        linksOnPage = htmlDocument.select(cssQuery);
+
+        driver.close();
+        driver.quit();
+
         return linksOnPage;
     }
 
@@ -48,7 +44,7 @@ public class SpiderService {
 
         Elements media;
         for (Video video : modifiedLinkList) {
-            media = crawl(video.getUrl(), "[src*=.mp4]");
+            media = crawl(video.getUrl(), "[src*=720.mp4]");
 
             writeString(GREEN_UNDERLINED + "____________________________________________________________________________________________________________________" + RESET);
             String link = createDownloadLink(media);// return first link from modifiedLinkList
@@ -57,6 +53,7 @@ public class SpiderService {
 
         return finishList;
     }
+
 
     private String createDownloadLink(Elements elements) {
 
@@ -68,10 +65,12 @@ public class SpiderService {
         return link;
     }
 
-    public List<Video> createLinkList(Elements elements) {
+
+    public List<Video> createStartLinkList(Elements elements) {
 
         return elements.stream()
-                .map((element) -> new Video(element.attr("abs:href"), element.text()))
+                .map((element) -> new Video(element.select("a").attr("href"),
+                        element.select("a").first().text()))
                 .distinct()
                 .sorted((video1, video2) -> video2.getName().substring(5, 7).compareTo(video1.getName().substring(5, 7)))
                 .collect(Collectors.toList());
@@ -79,7 +78,7 @@ public class SpiderService {
 
     public List<Video> modifyLinkList(List<Video> videoList) {
         return videoList.stream()
-                .map(e -> new Video(e.getUrl().replaceFirst("v", "m.v"), e.getName()))
+                .map(e -> new Video(e.getUrl().replaceFirst("/", "https://m.vk.com/"), e.getName()))
                 .collect(Collectors.toList());
 
     }
