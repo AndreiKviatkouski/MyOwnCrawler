@@ -10,10 +10,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static by.AndreiKviatkouski.util.ColorScheme.GREEN_UNDERLINED;
-import static by.AndreiKviatkouski.util.ColorScheme.RESET;
+import static by.AndreiKviatkouski.util.ColorScheme.*;
 import static by.AndreiKviatkouski.util.Writer.writeString;
 
 public class SpiderService {
@@ -24,10 +24,16 @@ public class SpiderService {
 
         System.setProperty("webdriver.chrome.driver",
                 "src\\main\\java\\by\\AndreiKviatkouski\\chromedriver\\chromedriver.exe");
+
+//        DesiredCapabilities capabilities = new DesiredCapabilities();
+//        capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "eager");
+
         WebDriver driver = new ChromeDriver();
         driver.get(url);
-
         Document htmlDocument = Jsoup.parse(driver.getPageSource());
+
+//        WebDriverWait wait = new WebDriverWait(driver, 30);
+//        wait.until(ExpectedConditions.jsReturnsValue("return document.readyState==\"complete\";"));
 
         linksOnPage = htmlDocument.select(cssQuery);
 
@@ -42,15 +48,28 @@ public class SpiderService {
 
         List<Video> finishList = new ArrayList<>();
 
-        Elements media;
-        for (Video video : modifiedLinkList) {
-            media = crawl(video.getUrl(), "[src*=720.mp4]");
+        long start = System.currentTimeMillis();
 
-            writeString(GREEN_UNDERLINED + "____________________________________________________________________________________________________________________" + RESET);
-            String link = createDownloadLink(media);// return first link from modifiedLinkList
-            finishList.add(new Video(video.getUrl(), video.getName(), link));
-        }
+        modifiedLinkList.stream().parallel()
+                .forEach(video -> finishList.add(
+                        new Video(video.getUrl(), video.getName(),
+                                createDownloadLink(crawl(video.getUrl(), "[src*=720.mp4]")))));
 
+//        Elements media;
+//        for (Video video : modifiedLinkList) {
+//
+//            media = crawl(video.getUrl(), "[src*=720.mp4]");
+//
+//            writeString(GREEN_UNDERLINED + "____________________________________________________________________________________________________________________" + RESET);
+//            String link = createDownloadLink(media);// return first link from modifiedLinkList
+//            finishList.add(new Video(video.getUrl(), video.getName(), link));
+//
+//        }
+
+        long finish = (System.currentTimeMillis() - start) / 1000;
+
+        System.out.println(GREEN + "Total time: " + finish + " sec " + RESET);
+//
         return finishList;
     }
 

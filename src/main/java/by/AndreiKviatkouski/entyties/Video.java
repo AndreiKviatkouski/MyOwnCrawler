@@ -2,6 +2,7 @@ package by.AndreiKviatkouski.entyties;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jsoup.select.Elements;
 
 @Data
 @NoArgsConstructor

@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 import static by.AndreiKviatkouski.util.ColorScheme.RESET;
 import static by.AndreiKviatkouski.util.ColorScheme.YELLOW_BOLD;
 
-public class Downloader implements Runnable {
+public class Downloader {
 
     public void downloadVideo(String url, String fileName) {
 
@@ -36,9 +36,5 @@ public class Downloader implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void run() {
     }
 }

@@ -18,11 +18,11 @@ public class SpiderRun {
         SpiderService spiderService = new SpiderService();
         Downloader downloader = new Downloader();
 
-        Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_115",
+      //  https://vk.com/videos-111905078?section=album_115
+        Elements onIndexPage = spiderService.crawl("https://vk.com/videos-111905078?section=album_273",
                 ".video_item_info");
 
         List<Video> startLinks = spiderService.createStartLinkList(onIndexPage);
-
         List<Video> modifiedLinks = spiderService.modifyLinkList(startLinks);
 
 
@@ -30,17 +30,23 @@ public class SpiderRun {
         modifiedLinks.stream().map(video -> video.getName() + " " + video.getUrl()).forEach(System.out::println);
 
         List<Video> finishList = spiderService.getFinishDownloadList(modifiedLinks);
-        for (Video video : finishList) {
-            Writer.writeString(RED + video + RESET);
 
-           downloader.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
+        finishList.parallelStream()
+                .forEach(video -> downloader.downloadVideo(
+                        video.getDownloadLink(),
+                        "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName()));
 
-        }
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        for (Video video : finishList) {
+//            Writer.writeString(RED + video + RESET);
+//
+//           downloader.downloadVideo(video.getDownloadLink(), "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
+//
+//        }
+//        try {
+//            Thread.sleep(10000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         Writer.writeError(YELLOW_BOLD + "WELL DONE JOB!");
     }
 }

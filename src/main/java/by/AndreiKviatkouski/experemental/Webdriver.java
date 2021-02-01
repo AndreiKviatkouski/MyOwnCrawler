@@ -16,7 +16,7 @@ public class Webdriver {
         WebDriver driver = new ChromeDriver();
 
         // Открываем гугл, используя драйвер
-        driver.get("https://m.vk.com/video-111905078_456246013");
+        driver.get("http://www.google.com");
         // По-другому это можно сделать так:
         // driver.navigate().to("http://www.google.com");
 
