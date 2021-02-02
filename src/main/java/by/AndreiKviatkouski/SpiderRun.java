@@ -33,17 +33,17 @@ public class SpiderRun {
         modifiedLinks.stream().map(video -> video.getName() + " " + video.getUrl()).forEach(System.out::println);
 
         List<Video> finishList = spiderService.getFinishDownloadList(modifiedLinks);
-        DownloaderManager downloaderManager = new DownloaderManager();
-        downloaderManager.setFinishList(finishList);
+//        DownloaderManager downloaderManager = new DownloaderManager();
+//        downloaderManager.setFinishList(finishList);
+//
+//
+//        downloaderManager.startTreads();
 
 
-        downloaderManager.startTreads();
-
-
-//        finishList.parallelStream()
-//                .forEach(video -> downloader.downloadVideo(
-//                        video.getDownloadLink(),
-//                        "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName()));
+        finishList.parallelStream()
+                .forEach(video -> downloader.downloadVideo(
+                        video.getDownloadLink(),
+                        "src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName()));
 
 //        for (Video video : finishList) {
 //            Writer.writeString(RED + video + RESET);
