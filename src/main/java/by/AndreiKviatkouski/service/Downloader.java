@@ -1,6 +1,9 @@
 package by.AndreiKviatkouski.service;
 
 import by.AndreiKviatkouski.util.Writer;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,12 +13,17 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
-import static by.AndreiKviatkouski.util.ColorScheme.RESET;
-import static by.AndreiKviatkouski.util.ColorScheme.YELLOW_BOLD;
+import static by.AndreiKviatkouski.util.ColorScheme.*;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Downloader implements Runnable {
 
-public class Downloader {
+    String url;
+    String fileName;
 
-    public void downloadVideo(String url, String fileName) {
+
+    public void downloadVideo() {
 
         if (url == null) {
             Writer.writeString("Empty URL");
@@ -36,5 +44,13 @@ public class Downloader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void run() {
+
+        String threadDescription = Thread.currentThread().getName();
+        System.out.println(BLUE + "Starting " + threadDescription);
+        downloadVideo();
     }
 }
