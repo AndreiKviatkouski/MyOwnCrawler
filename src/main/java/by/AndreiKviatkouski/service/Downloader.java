@@ -23,7 +23,7 @@ public class Downloader implements Runnable {
     String fileName;
 
 
-    public void downloadVideo(String url,String fileName) {
+    public void downloadVideo () {
 
         if (url == null) {
             Writer.writeString("Empty URL");
@@ -48,9 +48,11 @@ public class Downloader implements Runnable {
 
     @Override
     public void run() {
-
+        System.out.println(url + " " + "\n" + fileName );
         String threadDescription = Thread.currentThread().getName();
         System.out.println(BLUE + "Starting " + threadDescription);
-//        downloadVideo();
+        downloadVideo();
+
+        // tyutyuyuu  | tee output.txt
     }
 }

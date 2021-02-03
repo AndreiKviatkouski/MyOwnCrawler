@@ -14,21 +14,22 @@ import java.util.concurrent.Executors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DownloaderManager {
+
     private List<Video> finishList;
-    Downloader downloader = new Downloader();
-    ExecutorService executor = Executors.newFixedThreadPool(1);
-    Thread thread = new Thread(downloader);
+
+
+    ExecutorService executor = Executors.newFixedThreadPool(4);
 
     public void startTreads() {
 
         for (Video video : finishList) {
+            Downloader downloader = new Downloader();
+            Thread thread = new Thread(downloader);
             downloader.setUrl(video.getDownloadLink());
-            downloader.setFileName("src\\main\\java\\by\\AndreiKviatkouski\\video\\" + video.getName());
+            downloader.setFileName("src\\main\\java\\by\\AndreiKviatkouski\\video2\\" + video.getName());
             executor.execute(thread);
 
         }
         executor.shutdown();
     }
-
-
 }
